@@ -99,46 +99,89 @@ Default fallback is "results/" if OUTPUT_DIR is not set.
   Purpose: Load ST_LR_merged.rds, run Harmony integration,
            perform clustering (0.4 resolution), generate UMAP plots.
   Input:   data/ST_LR_merged.rds
+<<<<<<< HEAD
   Output:  figures/spatial_cluster.jpg
            figures/umap_clusters.jpg
            figures/umap_by_chip_id.jpg
            objects/LR_cluster.rds
+=======
+  Output:  figures/spatial_cluster.jpg (Figure 2B-I)
+                figures/umap_clusters.jpg (Figure 2A)
+                figures/umap_by_chip_id.jpg (Figure S2D)
+                objects/LR_cluster.rds
+>>>>>>> 51aa9eb2afbce5797fc300fa3444dd5b09dd6cef
 
 --- 03-markers-cell-proportion.R ---
   Purpose: Find all markers per cluster, generate dotplot & circle plot,
            compute cell proportions across samples.
+<<<<<<< HEAD
   Input:   objects/LR_cluster.rds
   Output:  figures/marker_gene_dotplot.jpg
            figures/marker_gene_circle.tif
            figures/cell_proportion.jpg
            tables/marker_genes.csv
+=======
+  Input:   data/ST_LR_merged.rds
+  Output:  figures/cell_proportion.jpg (Figure 2L)
+                figures/marker_gene_circle.tif (Figure 2K)
+                tables/marker_genes.csv
+>>>>>>> 51aa9eb2afbce5797fc300fa3444dd5b09dd6cef
 
 --- 04-quality-control.R ---
   Purpose: QC violin plots (nCount, nFeature, percent.mt), spatial QC,
            feature scatter plot, sample correlation heatmap.
   Input:   objects/LR_cluster.rds
+<<<<<<< HEAD
   Output:  figures/qc_vlnplot_ST_merged.jpg
            figures/nCount_Spatial_ST_merged.jpg
            figures/nFeature_Spatial_ST_merged.jpg
            figures/percent_mt_ST_merged.jpg
            figures/feature_scatter_ST_merged.jpg
            figures/sample_correlation_heatmap.jpg
+=======
+  Output:  figures/qc_vlnplot_ST_merged.jpg (combined plot of Figure S2A-C)
+           figures/nCount_Spatial_ST_merged.jpg (Figure S2A)
+           figures/nFeature_Spatial_ST_merged.jpg (Figure S2B)
+           figures/percent_mt_ST_merged.jpg (Figure S2C)
+           figures/feature_scatter_ST_merged.jpg (Figure S2E)
+>>>>>>> 51aa9eb2afbce5797fc300fa3444dd5b09dd6cef
            tables/QC_summary_13samples.csv
 
 --- 05-hdWGCNA.R ---
   Purpose: Co-expression network analysis using hdWGCNA.
+<<<<<<< HEAD
            Constructs metacells, computes modules, correlates with
            traits (sample origin, cluster ID). Falls back to ST_merged.rds
            if LR_cluster.rds is not available.
   Input:   objects/LR_cluster.rds (or data/ST_LR_merged.rds)
   Output:  Module-trait relationships (internal)
+=======
+           Constructs metacells, computes modules, generates network
+           dendrogram, module UMAPs, radar plot, per-module network
+           plots, and hub gene tables. Falls back to VariableFeatures
+           if bulk module data is unavailable.
+  Input:   objects/ST_LR_merged.rds (or ST_LR_WGCNA_finished.rds if exists)
+  Output:  figures/hdWGCNA_dendrogram.tif
+           figures/hdWGCNA_module_umap.jpg
+           figures/hdWGCNA_network.pdf
+           figures/hdWGCNA_radar_plot.jpg
+           figures/ModuleNetworks/*.pdf  (7 per-module networks)
+           tables/Top25_Hub_Genes_brown.csv
+           tables/Top25_Hub_Genes_turquoise.csv
+           tables/Top25_Hub_Genes_blue.csv
+           objects/ST_LR_WGCNA_finished.rds
+>>>>>>> 51aa9eb2afbce5797fc300fa3444dd5b09dd6cef
 
 --- 06-go-enrichment.R ---
   Purpose: GO enrichment (biological process) for hdWGCNA modules.
   Input:   data/ST_LR_merged.rds (for gene list)
   Output:  GO enrichment plots per module
 
+<<<<<<< HEAD
 --- 07-lr-subcluster-monocle3.R ---
+=======
+--- 07-LR-subcluster-monocle3.R ---
+>>>>>>> 51aa9eb2afbce5797fc300fa3444dd5b09dd6cef
   Purpose: Monocle3 pseudotime trajectory for:
            (a) LRP cells (from LR_LRP.rds)
            (b) Overlying cortex cells (from LR_overlying cortex.rds)
@@ -195,9 +238,17 @@ Default fallback is "results/" if OUTPUT_DIR is not set.
 
 After successful completion, output_run/ contains:
 
+<<<<<<< HEAD
   figures/   -- 49+ figures (JPG, TIFF, PNG)
   tables/    -- 8 CSV tables
   objects/   -- 4 .rds files (LR_cluster, LR_LRP, LR_overlying cortex, ST_LR_merged)
+=======
+  figures/   -- 55+ figures (JPG, TIFF, PNG, PDF)
+                including hdWGCNA network outputs (dendrogram, radar,
+                module UMAP, per-module networks)
+  tables/    -- 11 CSV tables (including 3 hub gene tables)
+  objects/   -- 5 .rds files (incl. ST_LR_WGCNA_finished.rds)
+>>>>>>> 51aa9eb2afbce5797fc300fa3444dd5b09dd6cef
   GO_results_LRP/  -- 21 GO enrichment CSV files
   GO_results_cortex/ -- 7 GO enrichment CSV files
   figures/GO_plots_LRP/    -- 21 dotplots

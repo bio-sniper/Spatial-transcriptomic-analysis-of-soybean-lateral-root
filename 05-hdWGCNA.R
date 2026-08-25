@@ -23,6 +23,7 @@ if (file.exists(hd_file)) {
 }
 
 # ------------------------------------------------------------------------------
+<<<<<<< HEAD
 # Import bulk WGCNA module genes
 # ------------------------------------------------------------------------------
 
@@ -40,6 +41,29 @@ LR_gene <- LR$Gene_ID
 
 peptidyl <- bulk_data[bulk_data$BULK_module == "red", ]
 peptidyl_gene <- peptidyl$Gene_ID
+=======
+# Import bulk WGCNA module genes (with fallback)
+# ------------------------------------------------------------------------------
+
+my_candidate <- tryCatch({
+    cell_wall <- bulk_data[bulk_data$BULK_module == "turquoise", ]
+    cell_wall_gene <- cell_wall$Gene_ID
+
+    ribosome <- bulk_data[bulk_data$BULK_module == "brown", ]
+    ribosome_gene <- ribosome$Gene_ID
+
+    LR <- bulk_data[bulk_data$BULK_module == "pink", ]
+    LR_gene <- LR$Gene_ID
+
+    peptidyl <- bulk_data[bulk_data$BULK_module == "red", ]
+    peptidyl_gene <- peptidyl$Gene_ID
+
+    unique(c(cell_wall_gene, ribosome_gene, LR_gene, peptidyl_gene))
+}, error = function(e) {
+    message("Bulk module genes not available (", e$message, "). Using VariableFeatures instead.")
+    NULL
+})
+>>>>>>> 51aa9eb2afbce5797fc300fa3444dd5b09dd6cef
 
 # ------------------------------------------------------------------------------
 # Prepare for hdWGCNA
@@ -50,6 +74,7 @@ DimPlot(ST_merged_hd)
 ST_merged_hd <- SeuratObject::UpdateSeuratObject(ST_merged_hd)
 DefaultAssay(ST_merged_hd) <- "SCT"
 
+<<<<<<< HEAD
 my_candidate <- unique(c(cell_wall_gene, ribosome_gene, LR_gene, peptidyl_gene))
 default_features <- VariableFeatures(ST_merged_hd, nfeatures = 3000)
 existing_genes <- rownames(ST_merged_hd)
@@ -60,6 +85,21 @@ message("Matched spatial genes: ", length(valid_candidate))
 
 combined_features <- unique(c(default_features, valid_candidate))
 combined_features <- combined_features[combined_features %in% existing_genes]
+=======
+default_features <- VariableFeatures(ST_merged_hd, nfeatures = 3000)
+existing_genes <- rownames(ST_merged_hd)
+
+if (is.null(my_candidate)) {
+    combined_features <- default_features[default_features %in% existing_genes]
+    message("Using ", length(combined_features), " VariableFeatures for WGCNA")
+} else {
+    valid_candidate <- my_candidate[my_candidate %in% existing_genes]
+    message("Bulk module genes: ", length(my_candidate))
+    message("Matched spatial genes: ", length(valid_candidate))
+    combined_features <- unique(c(default_features, valid_candidate))
+    combined_features <- combined_features[combined_features %in% existing_genes]
+}
+>>>>>>> 51aa9eb2afbce5797fc300fa3444dd5b09dd6cef
 
 ST_merged_hd <- SetupForWGCNA(
     ST_merged_hd,
@@ -177,9 +217,19 @@ target_genes <- c(
     "Glyma.13G325900", "Glyma.14G061500", "Glyma.06G250100"
 )
 
+<<<<<<< HEAD
 target_modules <- modules %>%
     filter(gene_name %in% peptidyl_gene)
 print(target_modules)
+=======
+target_modules <- tryCatch({
+    modules %>% filter(gene_name %in% peptidyl_gene)
+}, error = function(e) {
+    message("peptidyl_gene check skipped: ", e$message)
+    NULL
+})
+if (!is.null(target_modules)) print(target_modules)
+>>>>>>> 51aa9eb2afbce5797fc300fa3444dd5b09dd6cef
 
 # ------------------------------------------------------------------------------
 # Module expression scores and feature plots
@@ -206,6 +256,10 @@ ggsave(file.path(FIGURES_DIR, "hdWGCNA_module_umap.jpg"),
 # Bulk epigenetic score feature plot
 # ------------------------------------------------------------------------------
 
+<<<<<<< HEAD
+=======
+tryCatch({
+>>>>>>> 51aa9eb2afbce5797fc300fa3444dd5b09dd6cef
 ST_merged_hd <- AddModuleScore(
     ST_merged_hd,
     features = list(peptidyl_gene),
@@ -223,6 +277,10 @@ p_peptidyl <- FeaturePlot(
 ggsave(file.path(FIGURES_DIR, "hdWGCNA_peptidyl_score.jpg"),
        plot = p_peptidyl, width = 15, height = 12,
        dpi = 500, device = "jpeg")
+<<<<<<< HEAD
+=======
+}, error = function(e) message("Bulk epigenetic score plot skipped: ", e$message))
+>>>>>>> 51aa9eb2afbce5797fc300fa3444dd5b09dd6cef
 
 # ------------------------------------------------------------------------------
 # Module radar plot
